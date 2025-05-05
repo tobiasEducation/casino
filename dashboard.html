@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Games</title>
+  <style>
+    body{font-family:sans-serif;background:#eee;margin:0;padding:20px}
+    #box{max-width:600px;margin:auto;background:#fff;padding:20px}
+    .card{border:1px solid #ccc;padding:10px;margin:10px 0;cursor:pointer}
+    button{padding:8px 15px;border:0;background:#4caf50;color:#fff}
+    .logout{background:#f44336}
+  </style>
+</head>
+<body>
+
+  <div id="box">
+    <div id="info">Checking login…</div>
+
+    <h2>Games</h2>
+
+    <!-- just copy‑paste <div class="card"> blocks for more games -->
+    <div class="card" onclick="play('blackjack')">
+      Blackjack <button>Play</button>
+    </div>
+
+    <div class="card" onclick="play('leaderboard')">
+        Leaderboard <button>Go to leaderboard</button>
+      </div>
+
+    <button class="logout" onclick="bye()">Logout</button>
+  </div>
+
+  <script>
+    /* check login when page loads */
+    window.onload = function () {
+      var uid  = localStorage.getItem('userId');
+      var name = localStorage.getItem('username');
+      var info = document.getElementById('info');
+
+      if (!uid) {
+        info.innerHTML = 'Please <a href="/login.html">login</a> first';
+      } else {
+        info.textContent = 'Hi ' + (name || ('User ' + uid));
+      }
+    };
+
+    /* start a game */
+    function play (game) {
+      if (!localStorage.getItem('userId')) {
+        alert('login first');
+        location = '/login.html';
+        return;
+      }
+      localStorage.setItem('currentGame', game);
+      location = '/' + game + '.html';
+    
+    }
+
+    /* logout */
+    function bye () {
+      localStorage.clear();
+      location = '/login.html';
+    }
+  </script>
+</body>
+</html>

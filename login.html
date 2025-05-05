@@ -1,0 +1,31 @@
+<!doctype html>
+<style>
+  /* ta det i midten */
+  body{margin:0;height:100vh;display:flex;justify-content:center;align-items:center;font-family:sans-serif}
+  form{border:1px solid #ccc;padding:20px;text-align:center}
+  input,button{display:block;margin:6px 0;padding:8px;width:200px;box-sizing:border-box}
+</style>
+
+<form id=f>
+  <input name=u placeholder="Username" required>
+  <input name=p type=password placeholder="Password" required>
+  <button>Login</button>
+  <div id=m style="color:red"></div>
+</form>
+
+<script>
+f.onsubmit = async e => {
+  e.preventDefault();
+  const r = await fetch('/login', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({username:f.u.value, password:f.p.value})
+  });
+  const d = await r.json();
+  d.success
+    ? (localStorage.userId = d.userId, location = '/blackjack.html')
+    : (m.textContent = d.message || 'Login failed');
+};
+
+
+</script>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Leaderboard</title>
+  <style>
+    body { font-family:sans-serif; background:#f7f7f7; margin:0; padding:20px; text-align:center }
+    table{ border-collapse:collapse; width:100%; max-width:500px; margin:0 auto; background:#fff }
+    th,td{ border:1px solid #ccc; padding:8px }
+    th{ background:#eee }
+    h1{ margin-bottom:20px }
+  </style>
+</head>
+<body>
+  <h1>Leaderboard</h1>
+  <table id="board">
+    <tr>
+      <th>ID</th>
+      <th>User</th>
+      <th>Score</th>
+    </tr>
+  </table>
+
+  <script>
+    window.onload = function() {
+      fetch('/api/leaderboard?game=blackjack')
+        .then(r => r.json())
+        .then(data => {
+          var tbl = document.getElementById('board');
+          data.forEach(row => {
+            var tr = document.createElement('tr');
+            // ID cell
+            var tdId = document.createElement('td');
+            tdId.textContent = row.userId;
+            // Username cell
+            var tdUser = document.createElement('td');
+            tdUser.textContent = row.username;
+            // Score cell
+            var tdScore = document.createElement('td');
+            tdScore.textContent = row.score;
+            // append in order
+            tr.append(tdId, tdUser, tdScore);
+            tbl.appendChild(tr);
+          });
+        })
+        .catch(() => alert('Could not load leaderboard'));
+    };
+  </script>
+</body>
+</html>

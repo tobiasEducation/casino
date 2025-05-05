@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Roulette Game</title>
+</head>
+<body>
+    <h1>Roulette Game</h1>
+    <button id="playBtn">Play</button>
+    <div id="userInfo"></div>
+    <div id="result"></div>
+    <div id="status"></div>
+
+
+    <!-- Script -->
+    <script>
+        const get = key => localStorage.getItem(key);
+        const set = (key, value) => localStorage.setItem(key, value);
+
+        // Check login status
+        const checkLogin = () => {
+            const userId = get('userId');
+            const username = get('username') || `User ${userId}`;
+            const userInfo = document.getElementById('userInfo');
+
+            // Check if user is logged in
+            if (!userId) {
+                userInfo.textContent = 'Please login to play';
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            // Display user info
+            userInfo.textContent = `Playing as: ${username}`;
+            return true;
+        };
+
+        // Update score in database
+        const updateScore = () => {
+            const resultText = document.getElementById('result').textContent;
+            const score = resultText.includes('win') ? 1 : -1;
+
+
+            // Update score in database
+            fetch('/api/updateScore', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: get('userId'),
+                    gameId: 'roulette',
+                    score
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const status = document.getElementById('status');
+                status.textContent = data.success
+                    ? 'Score saved successfully'
+                    : `Error: ${data.message}`;
+            })
+            
+            .catch(err => {
+                console.error('Error:', err);
+                document.getElementById('status').textContent = 'Error connecting to server';
+            });
+        };
+
+        // Play game
+        const playGame = () => {
+            if (!checkLogin()) return;
+            set('currentGame', 'roulette');
+            document.getElementById('result').textContent = 'You spin... and win! 🎉'; // Example result
+            updateScore();
+        };
+
+        document.getElementById('playBtn').onclick = playGame;
+
+        window.onload = checkLogin;
+    </script>
+</body>
+</html>
